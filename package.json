@@ -5,8 +5,9 @@
   "author": "Michael Lewis <michael@patentnavigation.com>",
   "description": "A simple helpful robot for Patent Navigation",
   "dependencies": {
-    "hubot": "^2.16.0",
     "cron": "^1.0.9",
+    "hubot": "^2.16.0",
+    "hubot-beer-me": "^0.1.1",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-images": "^0.2.1",
     "hubot-google-translate": "^0.2.0",
