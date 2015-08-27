@@ -17,7 +17,7 @@ module.exports = (robot) ->
   request_url = base_url + '?filter=' + search_filters
 
   # When we run the interval reporting, we need to create the interval
-  time_interval = 1000 * 60 * 30 # this will run every 30 minutes
+  time_interval = 1000 * 60 * 30 # only report every 30 minutes
 
   # Set the options object for the request
   options =
@@ -44,7 +44,7 @@ module.exports = (robot) ->
     response
 
 
-  doPivotal = (res) ->
+  doPivotal = (res, sayYay) ->
     # define the callback for the request
     pivotal = (error, response, body) ->
       if !error and response.statusCode == 200
@@ -61,7 +61,7 @@ module.exports = (robot) ->
           res.send "The following deployment blockers exist, but haven't been started."
           robot.emit 'slack-attachment', message
         else
-          res.send "All deployment blockers are in progress, yay!"
+          res.send "All deployment blockers are in progress, yay!" if sayYay
       else
         res.send "Hmmm, something's not right with how I'm talking to PivotalTracker, a human should investigate." 
     
@@ -73,15 +73,15 @@ module.exports = (robot) ->
     
     # If we're already started, then just do the thing and get out.
     if pivotalInterval
-      doPivotal res
+      doPivotal res, true
       return
 
     # Do the thing for this particular event
-    doPivotal res
+    doPivotal res, true
 
     # Now turn on the interval pestering
     pivotalInterval = setInterval () ->
-      doPivotal res
+      doPivotal res, false
     , time_interval
 
   robot.respond /stop pivotal/, (res) ->
@@ -93,5 +93,5 @@ module.exports = (robot) ->
       res.send "Hey now, I *wasn't* pestering you about that, so what's your problem?"
 
   robot.respond /pivotal/, (res) ->
-    doPivotal res
+    doPivotal res, true
 
