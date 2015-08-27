@@ -17,7 +17,7 @@ module.exports = (robot) ->
   request_url = base_url + '?filter=' + search_filters
 
   # When we run the interval reporting, we need to create the interval
-  time_interval = 1000 * 10 # this will run every 30 minutes
+  time_interval = 1000 * 60 * 30 # this will run every 30 minutes
 
   # Set the options object for the request
   options =
