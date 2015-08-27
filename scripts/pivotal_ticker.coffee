@@ -13,7 +13,7 @@ module.exports = (robot) ->
 
   # The Pivotal API lets us use their normal search language, but we have to escape it
   search_filters = escape("state:unstarted,planned,unscheduled label:deployment-blocker")
-  base_url = "https://www.pivotaltracker.com/services/v5/projects/" + projectID + "/stories"
+  base_url = "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories"
   request_url = base_url + '?filter=' + search_filters
 
   # When we run the interval reporting, we need to create the interval
