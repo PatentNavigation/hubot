@@ -4,11 +4,7 @@
 AWS = require('aws-sdk')
 Q = require('q')
 
-access = process.env.AWS_ACCESS_KEY_ID
-secret = process.env.AWS_SECRET_ACCESS_KEY
 region = process.env.AWS_REGION
-
-AWS.config.update(accessKeyId: access, secretAccessKey: secret)
 
 class OpsWorks
   # You have to initialize with the region here, not in the update config
