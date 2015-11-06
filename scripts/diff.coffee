@@ -63,6 +63,7 @@ module.exports = (robot) ->
           comparison =
             id: app1.id
             compare_link: "https://github.com/" + app1.project + "compare/" + app1.revision + "..." + app2.revision + "/"
+            link_text: app1.revision.substring(0, 9) + "..." + app2.revision.substring(0, 9)
           all_links.push comparison
     all_links
 
@@ -84,7 +85,7 @@ module.exports = (robot) ->
       mrkdwn: false
     for app in data
       apps.value += app.id + "\n"
-      diffs.value += "<" + app.compare_link + "|Compare environments>\n"
+      diffs.value += "<" + app.compare_link + "|" + app.link_text + ">\n"
 
     fields.push apps
     fields.push diffs
