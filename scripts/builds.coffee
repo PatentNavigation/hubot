@@ -40,7 +40,6 @@ module.exports = (robot) ->
       for key, env_data of opsworks_apps when key in [env]
         fetchEnvAppBuilds env, env_data, res
 
-
   fetchEnvAppBuilds = (env, env_data, res) ->
     Q.all(
       for app, data of env_data
@@ -77,6 +76,7 @@ module.exports = (robot) ->
           message.channel = res.message.room
           robot.emit 'slack-attachment', message
         .catch (err) ->
+          console.log err
           res.send "Something funky happened while trying to talk to circle. I need a human to investigate."
     else
       res.send "I don't know anything about an app named " + app
