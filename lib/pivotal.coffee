@@ -90,9 +90,10 @@ class Pivotal
     def = Q.defer()
     Pivotal.get_project_ids()
       .then (ids) ->
-        blockers = Pivotal.get_all_blockers_for_ids(ids)
-        flattened = [].concat.apply([], blockers)
-        def.resolve flattened
-        return def.promise
+        Pivotal.get_all_blockers_for_ids(ids)
+          .then (blockers) ->
+            flattened = [].concat.apply([], blockers)
+            def.resolve flattened
+            return def.promise
 
 module.exports = Pivotal
