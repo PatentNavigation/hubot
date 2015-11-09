@@ -3,26 +3,14 @@
 #   worked on.
 #
 
-token = process.env.PIVOTAL_TOKEN
-projectId = process.env.PIVOTAL_PROJECT_ID
-request = require('request')
+Pivotal = require('../lib/pivotal')
 
 module.exports = (robot) ->
   # Initialize the setInterval variable
   pivotalInterval = null
 
-  # The Pivotal API lets us use their normal search language, but we have to escape it
-  search_filters = escape("state:unstarted,planned,unscheduled label:deployment-blocker")
-  base_url = "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories"
-  request_url = base_url + '?filter=' + search_filters
-
   # When we run the interval reporting, we need to create the interval
   time_interval = 1000 * 60 * 30 # only report every 30 minutes
-
-  # Set the options object for the request
-  options =
-    url: request_url
-    headers: 'X-TrackerToken': token
 
   # Define the slack attachment formatting function for when we attach the tickets
   # for which we need to raise awareness.
@@ -31,7 +19,7 @@ module.exports = (robot) ->
     for ticket in data
       # The format for what an attachment looks like is documented here:
       # https://api.slack.com/docs/attachments
-      attachment = 
+      attachment =
         fallback: ticket.name
         title: ticket.name
         title_link: ticket.url
@@ -40,37 +28,32 @@ module.exports = (robot) ->
       attachments.push attachment
     response =
       attachments: attachments
-    
+
     response
 
-
   doPivotal = (res, sayYay) ->
-    # define the callback for the request
-    pivotal = (error, response, body) ->
-      if !error and response.statusCode == 200
-        data = JSON.parse(body)
-        if data.length >= 1
+    Pivotal.get_all_blockers()
+      .then (blockers) ->
+        if blockers.length >= 1
           # In this case, there was a successful request to pivotal, and we have
           # at least one ticket that we need to format. Because we are sending
           # the tickets using the slack-attachment event, we need to set up some
           # stuff that wouldn't normally be set. See the slack adapter for what
           # sort of quacking we need to make happen.
           # https://github.com/slackhq/hubot-slack/blob/af37d933671423e5c00966395c9852ee7123bab7/src/slack.coffee#L254-L281
-          message = formatSlackResponse data
+          message = formatSlackResponse blockers
           message.channel = res.message.room
           res.send "The following deployment blockers exist, but haven't been started."
           robot.emit 'slack-attachment', message
         else
           res.send "All deployment blockers are in progress, yay!" if sayYay
-      else
-        res.send "Hmmm, something's not right with how I'm talking to PivotalTracker, a human should investigate." 
-    
-    # Now actually do the request to pivotal
-    request options, pivotal
+      .catch (error) ->
+        console.log error
+        res.send "Oh noes! I'm having trouble talking to pivotaltracker; a human should investigate."
 
   robot.respond /start pivotal/, (res) ->
     res.send "Ok, I'll start posting critical bugs to the room"
-    
+
     # If we're already started, then just do the thing and get out.
     if pivotalInterval
       doPivotal res, true
