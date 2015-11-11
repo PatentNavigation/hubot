@@ -7,7 +7,7 @@ Q = require('q')
 request = require('request')
 OpsWorks = require('../lib/opsworks')
 Circle = require('../lib/circle')
-S3Build = require('../lib/s3build')
+Dynamo = require('../lib/dynamo')
 
 # Local config file required for information about opsworks apps
 opsworks_apps = require(process.env.APPS_CONFIG_FILE)
@@ -51,7 +51,7 @@ module.exports = (robot) ->
         if 'opsworks_id' in Object.keys data
           OpsWorks.fetchBuildVersion(data)
         else
-          S3Build.fetchBuildVersion(env)
+          Dynamo.fetchBuildVersion(env)
     )
 
   buildCompareLinks = (first, second) ->
