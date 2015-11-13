@@ -1,6 +1,6 @@
 # Description:
-#   A hubot plugin to figure out what builds are deployed for our various projects
-#   and what builds are available on circle.
+#   A hubot plugin to figure out what builds are deployed for our various
+#   projects and what builds are available on circle.
 
 # Required 3rd party NPM libs
 Q = require('q')
@@ -13,7 +13,7 @@ opsworks_apps = require(process.env.APPS_CONFIG_FILE)
 # to respond
 OpsWorks = require('../lib/opsworks')
 Circle = require('../lib/circle')
-S3Build = require('../lib/s3build')
+Dynamo = require('../lib/dynamo')
 
 module.exports = (robot) ->
   robot.respond /available app*/, (res) ->
@@ -46,7 +46,7 @@ module.exports = (robot) ->
         if 'opsworks_id' in Object.keys data
           OpsWorks.fetchBuildVersion(data)
         else
-          S3Build.fetchBuildVersion(env)
+          Dynamo.fetchBuildVersion(env)
     )
       .done (values) ->
         message = formatSlackResponse values, ("Builds for apps in " + env)
@@ -108,5 +108,4 @@ module.exports = (robot) ->
       attachments: attachment
 
     response
-
 
