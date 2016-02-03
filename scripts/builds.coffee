@@ -46,7 +46,7 @@ module.exports = (robot) ->
         if 'opsworks_id' in Object.keys data
           OpsWorks.fetchBuildVersion(data)
         else
-          Dynamo.fetchBuildVersion(env)
+          Dynamo.fetchBuildVersion(data)
     )
       .done (values) ->
         message = formatSlackResponse values, ("Builds for apps in " + env)
