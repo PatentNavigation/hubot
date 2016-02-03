@@ -20,15 +20,8 @@ class Dynamo
     TableName: table
     ProjectionExpression: attrs_to_get
 
-  @fetchBuildVersion = (env) ->
-    key = @config[env]['farnsworth-web'].dynamo_key
-    # We need to set the meta_name & project_url here because the
-    # @config namespace is out of scope in the promise returned by get_dynamo_html.
-    # At least, that's what seems to be functionally happening
-    meta_name = @config[env]['farnsworth-web'].meta_name
-    project_url = @config[env]['farnsworth-web'].project_url
-
-    Dynamo.get_dynamo_html(key)
+  @fetchBuildVersion = (app) ->
+    Dynamo.get_dynamo_html(app.dynamo_key)
       .then (html) ->
 
         def = Q.defer()
@@ -36,16 +29,12 @@ class Dynamo
           if err
             def.reject err
           else
-            def.reject(err) if err
             $ = jquery(window)
             metas = $('meta')
             # Filter and get the only meta tag we care about
-            content = meta.content for meta in metas when meta.name is meta_name
+            content = meta.content for meta in metas when meta.name is app.meta_name
             json = JSON.parse(decodeURIComponent(content))
-            app =
-              id: json.APP.name + "-web"
-              build: json.APP.version.split('-')[0]
-              project_url: project_url
+            app.build = json.APP.version.split('-')[0]
             def.resolve app
         )
         return def.promise
