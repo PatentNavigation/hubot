@@ -2,7 +2,7 @@
   "name": "hubot",
   "version": "0.0.1",
   "private": true,
-  "author": "Michael Lewis <michael@patentnavigation.com>",
+  "author": "Ben Demboski <ben@turbopatent.us>",
   "description": "A simple helpful robot for Patent Navigation",
   "dependencies": {
     "aws-sdk": "^2.2.9",

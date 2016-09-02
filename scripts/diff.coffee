@@ -36,8 +36,7 @@ module.exports = (robot) ->
           .spread (first, second) ->
             comparisons = buildCompareLinks first, second
             message = formatSlackResponse comparisons, "Compare on Github."
-            message.channel = res.message.room
-            robot.emit 'slack-attachment', message
+            res.send message
           .catch (err) ->
             console.log err
             res.send "Oh noes! Something went wrong and I need a human to investigate."
@@ -91,6 +90,6 @@ module.exports = (robot) ->
     fields.push diffs
     attachment.fields = fields
     response =
-      attachments: attachment
+      attachments: [attachment]
 
     response

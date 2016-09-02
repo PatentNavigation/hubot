@@ -50,8 +50,7 @@ module.exports = (robot) ->
     )
       .done (values) ->
         message = formatSlackResponse values, ("Builds for apps in " + env)
-        message.channel = res.message.room
-        robot.emit 'slack-attachment', message
+        res.send message
 
   robot.respond /builds for (.*)/, (res) ->
     app = escape(res.match[1])
@@ -66,15 +65,13 @@ module.exports = (robot) ->
           res.send "Something funky happened while trying to talk to circle. I need a human to investigate."
         .done (values) ->
           message = formatSlackResponse values, "Most recent successful master builds."
-          message.channel = res.message.room
-          robot.emit 'slack-attachment', message
+          res.send message
 
     else if app in apps
       Circle.getLastBuild(app)
         .then (response) ->
           message = formatSlackResponse [response], "Most recent master builds."
-          message.channel = res.message.room
-          robot.emit 'slack-attachment', message
+          res.send message
         .catch (err) ->
           console.log err
           res.send "Something funky happened while trying to talk to circle. I need a human to investigate."
@@ -105,7 +102,7 @@ module.exports = (robot) ->
     fields.push builds
     attachment.fields = fields
     response =
-      attachments: attachment
+      attachments: [attachment]
 
     response
 
