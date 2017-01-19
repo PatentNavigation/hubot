@@ -6,6 +6,7 @@
 Q = require('q')
 request = require('request')
 OpsWorks = require('../lib/opsworks')
+ApiGateway = require('../lib/api-gateway')
 Circle = require('../lib/circle')
 Dynamo = require('../lib/dynamo')
 
@@ -49,6 +50,8 @@ module.exports = (robot) ->
       for app, data of env_data
         if 'opsworks_id' in Object.keys data
           OpsWorks.fetchBuildVersion(data)
+        else if 'api_gateway_url' in Object.keys data
+          ApiGateway.fetchBuildVersion(data)
         else
           Dynamo.fetchBuildVersion(data)
     )
