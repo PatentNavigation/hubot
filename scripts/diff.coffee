@@ -64,8 +64,8 @@ module.exports = (robot) ->
         if app2.id == app1.id
           comparison =
             id: app1.id
-            compare_link: "https://github.com/" + app1.project + "compare/" + app1.revision + "..." + app2.revision + "/"
-            link_text: app1.revision.substring(0, 9) + "..." + app2.revision.substring(0, 9)
+            compare_link: "https://github.com/" + app1.project + "compare/" + app2.revision + "..." + app1.revision + "/"
+            link_text: app2.revision.substring(0, 9) + "..." + app1.revision.substring(0, 9)
           all_links.push comparison
     all_links
 
