@@ -4,9 +4,19 @@
   "private": true,
   "author": "Ben Demboski <ben@turbopatent.us>",
   "description": "A simple helpful robot for Patent Navigation",
+  "scripts": {
+    "test": "./test.sh",
+    "lint": "eslint .",
+    "mocha": "mocha ./tests/**/*-test.js",
+    "mocha-debug": "mocha --inspect --debug-brk ./tests/**/*-test.js"
+  },
   "dependencies": {
     "aws-sdk": "^2.2.9",
+    "bluebird": "^3.4.7",
+    "chai": "^3.5.0",
     "cron": "^1.0.9",
+    "eslint": "^3.14.1",
+    "eslint-plugin-turbopatent": "^0.1.0",
     "hubot": "^2.16.0",
     "hubot-beer-me": "^0.1.1",
     "hubot-diagnostics": "0.0.1",
@@ -22,10 +32,13 @@
     "hubot-slack": "^4.0.1",
     "jquery": "^2.1.4",
     "jsdom": "^7.0.1",
-    "request": "^2.61.0",
-    "q": "^1.4.1"
+    "mocha": "^3.2.0",
+    "nock": "^9.0.2",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "sinon": "^1.17.7"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "6.x"
   }
 }
