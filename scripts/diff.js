@@ -67,15 +67,19 @@ function getShortRevision(revision) {
 
 function getCompareData(app, gitUrl, fromRev, toRev) {
   let linkUrl;
+  let linkText = `${getShortRevision(fromRev)}...${getShortRevision(toRev)}`;
   if (fromRev === 'DEV_VERSION' || toRev === 'DEV_VERSION') {
     linkUrl = 'https://www.youtube.com/watch?v=OHVjs4aobqs';
+  } else if (fromRev === toRev) {
+    linkText = '(same commit)';
+    linkUrl = `${gitUrl}/commit/${fromRev}`;
   } else {
     linkUrl = `${gitUrl}/compare/${fromRev}...${toRev}`;
   }
 
   return {
     app,
-    linkText: `${getShortRevision(fromRev)}...${getShortRevision(toRev)}`,
+    linkText,
     linkUrl
   };
 }

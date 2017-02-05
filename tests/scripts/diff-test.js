@@ -205,6 +205,62 @@ describe('diff command', function() {
         ]);
       });
     });
+
+    it('works with same commits', function() {
+      let apiGatewayStub = sandbox.stub(apiGateway, 'fetchBuildVersion');
+      apiGatewayStub.withArgs(getApp('api-gateway-app'), 'stage').returns(resolve("101"));
+      apiGatewayStub.withArgs(getApp('api-gateway-app'), 'prod').returns(resolve("101"));
+
+      let dynamoStub = sandbox.stub(dynamo, 'fetchBuildVersion');
+      dynamoStub.withArgs(getApp('dynamo-app'), 'stage').returns(resolve("201"));
+      dynamoStub.withArgs(getApp('dynamo-app'), 'prod').returns(resolve("201"));
+
+      let opsworksStub = sandbox.stub(opsworks, 'fetchBuildVersion');
+      opsworksStub.withArgs(getApp('opsworks-app'), 'stage').returns(resolve("401"));
+      opsworksStub.withArgs(getApp('opsworks-app'), 'prod').returns(resolve("401"));
+
+      sandbox.stub(circle, 'getRevisionForBuild', (app, buildNum) => {
+        let rev = '';
+        [ 1, 2, 3, 4, 5 ].forEach(() => rev += buildNum);
+        return rev;
+      });
+
+      diffHandler(robot);
+      return robot.execFn("diff prod stage").then((results) => {
+        assert.deepEqual(results, [
+          {
+            attachments: [
+              {
+                pretext: "Compare on Github",
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "api-gateway-app",
+                      "dynamo-app",
+                      "bad-app",
+                      "opsworks-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      '<https://github.com/PatentNavigation/api-gateway-app/commit/101101101101101|(same commit)>',
+                      '<https://github.com/PatentNavigation/dynamo-app/commit/201201201201201|(same commit)>',
+                      'Unable to determine app method',
+                      '<https://github.com/PatentNavigation/opsworks-app/commit/401401401401401|(same commit)>'
+                    ].join('\n'),
+                    short: true
+                  }
+                ]
+              }
+            ]
+          }
+        ]);
+      });
+    });
   });
 
   describe('stage latest', function() {
@@ -307,6 +363,59 @@ describe('diff command', function() {
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...222222222>',
                       'Unable to determine app method',
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...444444444>'
+                    ].join('\n'),
+                    short: true
+                  }
+                ]
+              }
+            ]
+          }
+        ]);
+      });
+    });
+
+    it('works with same commits', function() {
+      let apiGatewayStub = sandbox.stub(apiGateway, 'fetchBuildVersion');
+      apiGatewayStub.withArgs(getApp('api-gateway-app'), 'stage').returns(resolve("111"));
+
+      let dynamoStub = sandbox.stub(dynamo, 'fetchBuildVersion');
+      dynamoStub.withArgs(getApp('dynamo-app'), 'stage').returns(resolve("222"));
+
+      let opsworksStub = sandbox.stub(opsworks, 'fetchBuildVersion');
+      opsworksStub.withArgs(getApp('opsworks-app'), 'stage').returns(resolve("444"));
+
+      sandbox.stub(circle, 'getRevisionForBuild', (app, buildNum) => {
+        let rev = '';
+        [ 1, 2, 3, 4, 5 ].forEach(() => rev += buildNum);
+        return rev;
+      });
+
+      diffHandler(robot);
+      return robot.execFn("diff stage latest").then((results) => {
+        assert.deepEqual(results, [
+          {
+            attachments: [
+              {
+                pretext: "Compare on Github",
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "api-gateway-app",
+                      "dynamo-app",
+                      "bad-app",
+                      "opsworks-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      '<https://github.com/PatentNavigation/api-gateway-app/commit/111111111111111|(same commit)>',
+                      '<https://github.com/PatentNavigation/dynamo-app/commit/222222222222222|(same commit)>',
+                      'Unable to determine app method',
+                      '<https://github.com/PatentNavigation/opsworks-app/commit/444444444444444|(same commit)>'
                     ].join('\n'),
                     short: true
                   }
