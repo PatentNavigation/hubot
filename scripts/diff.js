@@ -6,6 +6,7 @@ const {
   }
 } = require('bluebird');
 const { getAppMethods } = require('../lib/app-types');
+const makeAttachments = require('../lib/make-attachments');
 
 function diffHandler(robot) {
   // We import these here instead of at the global scope so we can stub out
@@ -85,31 +86,13 @@ function getCompareData(app, gitUrl, fromRev, toRev) {
 }
 
 function formatSlackResponse(data, pretext) {
-  // The format for what an attachment looks like is documented here:
-  // https://api.slack.com/docs/attachments
-  function makeLink({ linkUrl, linkText }) {
-    return `<${linkUrl}|${linkText}>`;
-  }
-
   return {
-    attachments: [
-      {
-        pretext,
-        color: 'good',
-        fields: [
-          {
-            title: "App",
-            value: data.map(({ app: { id } }) => id).join('\n'),
-            short: true
-          },
-          {
-            title: "Github",
-            value: data.map((item) => item.error || makeLink(item)).join('\n'),
-            short: true
-          }
-        ]
-      }
-    ]
+    attachments: makeAttachments({
+      pretext,
+      valueTitle: "Github",
+      data,
+      linkFactory: ({ linkUrl, linkText }) => `<${linkUrl}|${linkText}>`
+    })
   };
 }
 

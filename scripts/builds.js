@@ -5,6 +5,7 @@ const {
   }
 } = require('bluebird');
 const { getBuildUrl } = require('../lib/circle');
+const makeAttachments = require('../lib/make-attachments');
 
 function buildsHandler(robot) {
   // We import these here instead of at the global scope so we can stub out
@@ -65,31 +66,13 @@ function processBuild(app, buildNumPromise) {
 }
 
 function formatSlackResponse(data, pretext) {
-  // The format for what an attachment looks like is documented here:
-  // https://api.slack.com/docs/attachments
-  function makeLink({ buildNum, circleUrl }) {
-    return `<${circleUrl}|Circle Build ${buildNum}>`;
-  }
-
   return {
-    attachments: [
-      {
-        pretext,
-        color: 'good',
-        fields: [
-          {
-            title: "App",
-            value: data.map(({ app: { id } }) => id).join('\n'),
-            short: true
-          },
-          {
-            title: "Build",
-            value: data.map((item) => item.error || makeLink(item)).join('\n'),
-            short: true
-          }
-        ]
-      }
-    ]
+    attachments: makeAttachments({
+      pretext,
+      valueTitle: "Build",
+      data,
+      linkFactory: ({ buildNum, circleUrl }) => `<${circleUrl}|Circle Build ${buildNum}>`
+    })
   };
 }
 
