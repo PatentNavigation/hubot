@@ -133,10 +133,15 @@ describe('diff command', function() {
                     value: [
                       '<https://github.com/PatentNavigation/api-gateway-app/compare/101101101101101...105105105105105|101101101...105105105>',
                       '<https://github.com/PatentNavigation/dynamo-app/compare/201201201201201...205205205205205|201201201...205205205>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://github.com/PatentNavigation/opsworks-app/compare/401401401401401...405405405405405|401401401...405405405>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -193,10 +198,15 @@ describe('diff command', function() {
                     value: [
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|101101101...DEV_VERSION>',
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...205205205>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...DEV_VERSION>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -249,10 +259,15 @@ describe('diff command', function() {
                     value: [
                       '<https://github.com/PatentNavigation/api-gateway-app/commit/101101101101101|(same commit)>',
                       '<https://github.com/PatentNavigation/dynamo-app/commit/201201201201201|(same commit)>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://github.com/PatentNavigation/opsworks-app/commit/401401401401401|(same commit)>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -304,10 +319,15 @@ describe('diff command', function() {
                     value: [
                       '<https://github.com/PatentNavigation/api-gateway-app/compare/105105105105105...111111111111111|105105105...111111111>',
                       '<https://github.com/PatentNavigation/dynamo-app/compare/205205205205205...222222222222222|205205205...222222222>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://github.com/PatentNavigation/opsworks-app/compare/405405405405405...444444444444444|405405405...444444444>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -361,10 +381,15 @@ describe('diff command', function() {
                     value: [
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...111111111>',
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...222222222>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://www.youtube.com/watch?v=OHVjs4aobqs|DEV_VERSION...444444444>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -414,10 +439,15 @@ describe('diff command', function() {
                     value: [
                       '<https://github.com/PatentNavigation/api-gateway-app/commit/111111111111111|(same commit)>',
                       '<https://github.com/PatentNavigation/dynamo-app/commit/222222222222222|(same commit)>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://github.com/PatentNavigation/opsworks-app/commit/444444444444444|(same commit)>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }

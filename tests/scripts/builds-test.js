@@ -98,10 +98,15 @@ describe('builds command', function() {
                     value: [
                       '<https://www.youtube.com/watch?v=ih2xubMaZWI|Circle Build DEV_VERSION>',
                       '<https://circleci.com/gh/PatentNavigation/custom-dynamo-app/222|Circle Build 222>',
-                      'Unable to determine app method',
+                      'ERROR',
                       '<https://circleci.com/gh/PatentNavigation/opsworks-app/333|Circle Build 333>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -139,11 +144,21 @@ describe('builds command', function() {
                     title: "Build",
                     value: [
                       '<https://circleci.com/gh/PatentNavigation/api-gateway-app/111|Circle Build 111>',
-                      'Error: Something went wrong!',
-                      'Unable to determine app method',
+                      'ERROR',
+                      'ERROR',
                       '<https://circleci.com/gh/PatentNavigation/opsworks-app/333|Circle Build 333>'
                     ].join('\n'),
                     short: true
+                  },
+                  {
+                    title: "dynamo-app error",
+                    value: 'Error: Something went wrong!',
+                    short: false
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
                   }
                 ]
               }
@@ -231,10 +246,15 @@ describe('builds command', function() {
                       value: [
                         '<https://www.youtube.com/watch?v=ih2xubMaZWI|Circle Build DEV_VERSION>',
                         '<https://circleci.com/gh/PatentNavigation/custom-dynamo-app/222|Circle Build 222>',
-                        'Error: Something went wrong!',
+                        'ERROR',
                         '<https://circleci.com/gh/PatentNavigation/opsworks-app/444|Circle Build 444>'
                       ].join('\n'),
                       short: true
+                    },
+                    {
+                      title: "bad-app error",
+                      value: 'Error: Something went wrong!',
+                      short: false
                     }
                   ]
                 }
@@ -304,9 +324,14 @@ describe('builds command', function() {
                     {
                       title: "Build",
                       value: [
-                        'Error: Something went wrong!'
+                        'ERROR'
                       ].join('\n'),
                       short: true
+                    },
+                    {
+                      title: "api-gateway-app error",
+                      value: 'Error: Something went wrong!',
+                      short: false
                     }
                   ]
                 }
