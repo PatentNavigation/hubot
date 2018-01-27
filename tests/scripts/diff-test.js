@@ -6,6 +6,7 @@ const {
 const { assert } = require('chai');
 const diffHandler = require('../../scripts/diff');
 const apiGateway = require('../../lib/api-gateway');
+const { setBatchSize } = require('../../lib/make-attachments');
 const dynamo = require('../../lib/dynamo');
 const opsworks = require('../../lib/opsworks');
 const circle = require('../../lib/circle');
@@ -448,6 +449,156 @@ describe('diff command', function() {
                     title: "bad-app error",
                     value: 'Unable to determine app method',
                     short: false
+                  }
+                ]
+              }
+            ]
+          }
+        ]);
+      });
+    });
+  });
+
+  describe('paging', function() {
+    beforeEach(function() {
+      let apiGatewayStub = sandbox.stub(apiGateway, 'fetchBuildVersion');
+      apiGatewayStub.withArgs(getApp('api-gateway-app'), 'stage').returns(resolve("105"));
+      apiGatewayStub.withArgs(getApp('api-gateway-app'), 'prod').returns(resolve("101"));
+
+      let dynamoStub = sandbox.stub(dynamo, 'fetchBuildVersion');
+      dynamoStub.withArgs(getApp('dynamo-app'), 'stage').returns(resolve("205"));
+      dynamoStub.withArgs(getApp('dynamo-app'), 'prod').returns(resolve("201"));
+
+      let opsworksStub = sandbox.stub(opsworks, 'fetchBuildVersion');
+      opsworksStub.withArgs(getApp('opsworks-app'), 'stage').returns(resolve("405"));
+      opsworksStub.withArgs(getApp('opsworks-app'), 'prod').returns(resolve("401"));
+
+      sandbox.stub(circle, 'getRevisionForBuild', (app, buildNum) => {
+        let rev = '';
+        [ 1, 2, 3, 4, 5 ].forEach(() => rev += buildNum);
+        return rev;
+      });
+    });
+
+    afterEach(function() {
+      setBatchSize();
+    });
+
+    it('works', function() {
+      setBatchSize(2);
+
+      diffHandler(robot);
+      return robot.execFn("diff prod stage").then((results) => {
+        assert.deepEqual(results, [
+          {
+            attachments: [
+              {
+                pretext: "Compare on Github",
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "api-gateway-app",
+                      "dynamo-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      '<https://github.com/PatentNavigation/api-gateway-app/compare/101101101101101...105105105105105|101101101...105105105>',
+                      '<https://github.com/PatentNavigation/dynamo-app/compare/201201201201201...205205205205205|201201201...205205205>'
+                    ].join('\n'),
+                    short: true
+                  }
+                ]
+              },
+              {
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "bad-app",
+                      "opsworks-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      'ERROR',
+                      '<https://github.com/PatentNavigation/opsworks-app/compare/401401401401401...405405405405405|401401401...405405405>'
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
+                  }
+                ]
+              }
+            ]
+          }
+        ]);
+      });
+    });
+
+    it('works with a partial page', function() {
+      setBatchSize(3);
+
+      diffHandler(robot);
+      return robot.execFn("diff prod stage").then((results) => {
+        assert.deepEqual(results, [
+          {
+            attachments: [
+              {
+                pretext: "Compare on Github",
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "api-gateway-app",
+                      "dynamo-app",
+                      "bad-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      '<https://github.com/PatentNavigation/api-gateway-app/compare/101101101101101...105105105105105|101101101...105105105>',
+                      '<https://github.com/PatentNavigation/dynamo-app/compare/201201201201201...205205205205205|201201201...205205205>',
+                      'ERROR'
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "bad-app error",
+                    value: 'Unable to determine app method',
+                    short: false
+                  }
+                ]
+              },
+              {
+                color: 'good',
+                fields: [
+                  {
+                    title: "App",
+                    value: [
+                      "opsworks-app"
+                    ].join('\n'),
+                    short: true
+                  },
+                  {
+                    title: "Github",
+                    value: [
+                      '<https://github.com/PatentNavigation/opsworks-app/compare/401401401401401...405405405405405|401401401...405405405>'
+                    ].join('\n'),
+                    short: true
                   }
                 ]
               }
