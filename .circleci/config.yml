@@ -1,0 +1,23 @@
+# Cache key definitions
+cache-node-modules: &cache-node-modules
+  key: node-modules-cache-{{ checksum "package.json" }}
+
+version: 2
+jobs:
+  build:
+    working_directory: ~/hubot
+    docker:
+      - image: circleci/node:6-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache-node-modules
+      - run:
+          name: yarn
+          command: |
+            [ -d node_modules ] || yarn
+      - save_cache:
+          <<: *cache-node-modules
+          paths:
+            - node_modules
+      - run: yarn test
