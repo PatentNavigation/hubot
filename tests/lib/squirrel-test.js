@@ -14,6 +14,7 @@ describe('electron', function() {
   let squirrel = 'squirrel';
   let app = {
     id: 'my-app',
+    appName: 'somename',
     stage: { squirrel },
     prod: { squirrel }
   };
@@ -50,7 +51,7 @@ describe('electron', function() {
           KeyConditionExpression: '#name = :hkey',
           FilterExpression: '#dev = :dev',
           ExpressionAttributeNames: { '#name': 'name', '#dev': 'dev' },
-          ExpressionAttributeValues: { ':hkey': 'TurboPatent_darwin_x64', ':dev': true },
+          ExpressionAttributeValues: { ':hkey': 'somename_darwin_x64', ':dev': true },
           ScanIndexForward: false
         });
         assert.equal(buildNum, "12345");
@@ -64,7 +65,7 @@ describe('electron', function() {
           KeyConditionExpression: '#name = :hkey',
           FilterExpression: '#release = :release',
           ExpressionAttributeNames: { '#name': 'name', '#release': 'release' },
-          ExpressionAttributeValues: { ':hkey': 'TurboPatent_darwin_x64', ':release': true },
+          ExpressionAttributeValues: { ':hkey': 'somename_darwin_x64', ':release': true },
           ScanIndexForward: false
         });
         assert.equal(buildNum, "12345");
