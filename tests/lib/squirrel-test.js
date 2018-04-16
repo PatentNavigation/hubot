@@ -11,10 +11,11 @@ const { docClient } = require('../../lib/aws');
 const sinon = require('sinon');
 
 describe('electron', function() {
+  let squirrel = 'squirrel';
   let app = {
     id: 'my-app',
-    stage: { dynamoKey: '/stage/current' },
-    prod: { dynamoKey: '/prod/current' }
+    stage: { squirrel },
+    prod: { squirrel }
   };
 
   let sandbox = sinon.sandbox.create();
@@ -43,7 +44,7 @@ describe('electron', function() {
   describe('fetchBuildVersion stage', function() {
     it('works for stage', function() {
       let stub = sandbox.stub(docClient, 'query').returns({ promise });
-      return fetchBuildVersion('booger', 'stage').then((buildNum) => {
+      return fetchBuildVersion(app, 'stage').then((buildNum) => {
         assert.deepEqual(stub.getCall(0).args[0], {
           TableName: 'testtable',
           KeyConditionExpression: '#name = :hkey',
@@ -57,7 +58,7 @@ describe('electron', function() {
     });
     it('works for prod', function() {
       let stub = sandbox.stub(docClient, 'query').returns({ promise });
-      return fetchBuildVersion('booger', 'prod').then((buildNum) => {
+      return fetchBuildVersion(app, 'prod').then((buildNum) => {
         assert.deepEqual(stub.getCall(0).args[0], {
           TableName: 'testtable',
           KeyConditionExpression: '#name = :hkey',
