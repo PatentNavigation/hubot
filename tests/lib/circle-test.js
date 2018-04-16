@@ -101,7 +101,7 @@ describe('circle', function() {
     });
 
     it('works with a squirrel setting', function() {
-      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/somename/104').query({
+      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-app/104').query({
         'circle-token': 'testtoken'
       }).reply(200, [ buildInfo ]);
       sandbox.stub(docClient, 'query').returns({ promise });
