@@ -4,13 +4,22 @@ const {
   getLastBuild,
   getRevisionForBuild
 } = require('../../lib/circle');
+const {
+  Promise: {
+    resolve
+  }
+} = require('bluebird');
 const { setTestConfig } = require('../../lib/get-config');
+const { docClient } = require('../../lib/aws');
 const nock = require('nock');
+const sinon = require('sinon');
 
 describe('circle', function() {
   let app = {
     id: 'my-app'
   };
+
+  let sandbox = sinon.sandbox.create();
 
   let buildInfo = {
     'vcs_revision': '2603cb49452827184714c92083caffe8f1e2db27',
@@ -18,14 +27,21 @@ describe('circle', function() {
     'build_num': 104
   };
 
+  // stub for doc client
+  function promise() {
+    return resolve({ Items: [ { version: '1.2.3-r104' } ] });
+  }
+
   beforeEach(function() {
     setTestConfig({
-      circle_token: 'testtoken' // eslint-disable-line camelcase
+      circle_token: 'testtoken', // eslint-disable-line camelcase
+      electron_table: 'testtable' // eslint-disable-line camelcase
     });
   });
 
   afterEach(function() {
     nock.cleanAll();
+    sandbox.restore();
     setTestConfig(null);
   });
 
@@ -81,6 +97,19 @@ describe('circle', function() {
         assert.isOk(false, `unexpected success: ${res}`);
       }).catch(() => {
         assert.isOk(true);
+      });
+    });
+
+    it('works with a squirrel setting', function() {
+      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/somename/104').query({
+        'circle-token': 'testtoken'
+      }).reply(200, [ buildInfo ]);
+      sandbox.stub(docClient, 'query').returns({ promise });
+      return getLastBuild({ id: 'my-app', appName: 'somename', stage: { squirrel: 'squirrel' } }).then(({ buildNum, gitUrl, revision }) => {
+
+        assert.equal(buildNum, 104);
+        assert.equal(gitUrl, 'https://github.com/PatentNavigation/my-app');
+        assert.equal(revision, '2603cb49452827184714c92083caffe8f1e2db27');
       });
     });
   });
