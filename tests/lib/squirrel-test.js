@@ -88,7 +88,7 @@ describe('electron', function() {
       });
     });
 
-    it('throws an error when the app is not a dynamo app', function() {
+    it('throws an error when the app is not a squirrel app', function() {
       return fetchBuildVersion({ id: 'my-app', stage: { opsworksId: "12" } }).then((buildNum) => {
         assert.ok(false, `unexpected success: ${buildNum}`);
       }).catch(() => {
