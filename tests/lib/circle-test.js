@@ -59,7 +59,7 @@ describe('circle', function() {
 
   describe('getLastBuild', function() {
     it('works', function() {
-      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-app/tree/master').query({
+      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-app/tree/main').query({
         limit: 1,
         filter: 'successful',
         'circle-token': 'testtoken'
@@ -72,8 +72,22 @@ describe('circle', function() {
       });
     });
 
+    it('works with a custom main branch', function() {
+      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-app/tree/other-branch').query({
+        limit: 1,
+        filter: 'successful',
+        'circle-token': 'testtoken'
+      }).reply(200, [ buildInfo ]);
+
+      return getLastBuild({ id: 'my-app', mainBranch: 'other-branch' }).then(({ buildNum, gitUrl, revision }) => {
+        assert.equal(buildNum, 104);
+        assert.equal(gitUrl, 'https://github.com/PatentNavigation/my-app');
+        assert.equal(revision, '2603cb49452827184714c92083caffe8f1e2db27');
+      });
+    });
+
     it('works with a custom circle path', function() {
-      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-custom-app/tree/master').query({
+      nock('https://circleci.com').get('/api/v1/project/PatentNavigation/my-custom-app/tree/main').query({
         limit: 1,
         filter: 'successful',
         'circle-token': 'testtoken'
