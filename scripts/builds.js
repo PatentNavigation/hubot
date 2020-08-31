@@ -46,7 +46,7 @@ function buildsHandler(robot) {
     }
 
     return all(promises).then((values) => {
-      return res.send(formatSlackResponse(values, "Most recent successful master builds"));
+      return res.send(formatSlackResponse(values, "Most recent successful builds"));
     });
   });
 }

@@ -208,7 +208,7 @@ describe('builds command', function() {
             {
               attachments: [
                 {
-                  pretext: "Most recent successful master builds",
+                  pretext: "Most recent successful builds",
                   color: 'good',
                   fields: [
                     {
@@ -255,7 +255,7 @@ describe('builds command', function() {
             {
               attachments: [
                 {
-                  pretext: "Most recent successful master builds",
+                  pretext: "Most recent successful builds",
                   color: 'good',
                   fields: [
                     {
@@ -305,7 +305,7 @@ describe('builds command', function() {
             {
               attachments: [
                 {
-                  pretext: "Most recent successful master builds",
+                  pretext: "Most recent successful builds",
                   color: 'good',
                   fields: [
                     {
@@ -340,7 +340,7 @@ describe('builds command', function() {
             {
               attachments: [
                 {
-                  pretext: "Most recent successful master builds",
+                  pretext: "Most recent successful builds",
                   color: 'good',
                   fields: [
                     {
