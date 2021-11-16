@@ -11,7 +11,7 @@
     "mocha-debug": "mocha --inspect --debug-brk ./tests/**/*-test.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.2.9",
+    "aws-sdk": "^2.814.0",
     "bluebird": "^3.4.7",
     "chai": "^3.5.0",
     "cron": "^1.0.9",
